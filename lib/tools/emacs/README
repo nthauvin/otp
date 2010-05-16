@@ -22,6 +22,18 @@ provided that OTP is installed in the directory /usr/local/otp:
       (setq exec-path (cons "/usr/local/otp/bin" exec-path))
       (require 'erlang-start)
 
+To enable 'flymake mode', which performs on-the-fly syntax checking as
+you type, add this after the code above:
+
+      (add-hook 'erlang-mode-hook
+                '(lambda ()
+                   (flymake-mode)
+                   (local-set-key (kbd "M-'") 'erlang-flymake-next-error)
+                   ))
+
+And then flymake mode will be automatically enabled when you load any .erl
+file. Use Alt-' to move the cursor to the next error discovered by flymake.
+
 
 For Windows users
 -----------------
@@ -42,7 +54,3 @@ Files\erl-<Ver>:
       (setq erlang-root-dir "C:/Program Files/erl<Ver>")
       (setq exec-path (cons "C:/Program Files/erl<Ver>/bin" exec-path))
       (require 'erlang-start)
-    
-
-
-
