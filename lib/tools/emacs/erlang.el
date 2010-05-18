@@ -906,6 +906,9 @@ behaviour.")
 ;; Tempo skeleton templates:
 (load erlang-skel-file)
 
+;; Flymake support
+(load "erlang-flymake")
+
 ;; Font-lock variables
 
 ;; The next few variables define different Erlang font-lock patterns.
