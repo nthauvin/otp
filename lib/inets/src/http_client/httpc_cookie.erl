@@ -482,7 +482,8 @@ path_sort(Cookies)->
 %% , in this case the header list will have been incorrectly split
 %% in parse_set_cookies/2 this functions fixs that problem.
 fix_netscape_cookie([Cookie1, Cookie2 | Rest], Acc) ->
-    case inets_regexp:match(Cookie1, "expires=") of
+    LowerCaseCookie = string:to_lower(Cookie1),
+    case inets_regexp:match(LowerCaseCookie, "expires=") of
 	{_, _, _} ->
 	    fix_netscape_cookie(Rest, [Cookie1 ++ Cookie2 | Acc]);
 	nomatch ->

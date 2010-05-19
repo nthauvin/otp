@@ -161,16 +161,18 @@ netscape_cookies(suite) ->
     [];
 netscape_cookies(Config) when is_list(Config) -> 
     tsp("netscape_cookies -> Cookies 1: ~p", [httpc:which_cookies()]),
+    check_netscape_cookie ("expires=" ++ future_netscape_date()),
+    tsp("netscape_cookies -> Cookies 2: ~p", [httpc:which_cookies()]),
+    check_netscape_cookie ("Expires=" ++ future_netscape_date_rfc_2109()),
+    tsp("netscape_cookies -> Cookies 3: ~p", [httpc:which_cookies()]),
+    ok.
 
-    Expires = future_netscape_date(),
-    SetCookieHeaders = [{"set-cookie", "test_cookie=true; path=/; " 
-			 "expires=" ++ Expires}],
+check_netscape_cookie (Expires) ->
+    CookieValue = "test_cookie=true; path=/; " ++ Expires,
+    SetCookieHeaders = [{"set-cookie", CookieValue}],
     http:verify_cookies(SetCookieHeaders, ?URL),
     {"cookie","$Version=0; test_cookie=true; $Path=/"} = 
-	http:cookie_header(?URL),
-
-    tsp("netscape_cookies -> Cookies 2: ~p", [httpc:which_cookies()]),
-    ok.
+	http:cookie_header(?URL).
 
 cookie_cancel(doc) -> 
     ["A cookie can be canceld by sending the same cookie with max-age=0 "
@@ -371,6 +373,11 @@ future_netscape_date() ->
     [Day, DD, Mon, YYYY] = netscape_date(date()),
     lists:flatten(io_lib:format("~s, ~s ~s ~s 12:30:00 GMT", 
 				[Day, DD, Mon, YYYY])).
+
+future_netscape_date_rfc_2109() ->
+    [Day, DD, Mon, [_, _ | YY]] = netscape_date(date()),
+    lists:flatten(io_lib:format("~s, ~s-~s-~s 12:30:00 GMT",
+				[Day, DD, Mon, YY])).
 
 netscape_date({Year, 12, _}) ->
     NewYear = Year + 1,

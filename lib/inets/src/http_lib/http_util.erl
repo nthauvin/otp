@@ -66,6 +66,23 @@ convert_netscapecookie_date([_D,_A,_Y, _SP,
     Hour=list_to_integer([H1,H2]),
     Min=list_to_integer([M1,M2]),
     Sec=list_to_integer([S1,S2]),
+    {{Year,Month,Day},{Hour,Min,Sec}};
+
+convert_netscapecookie_date([_D,_A,_Y, _SP,
+			     D1,D2,_DA,
+			     M,O,N,_DA,
+			     Y3,Y4,_SP,
+			     H1,H2,_Col,
+			     M1,M2,_Col,
+			     S1,S2|_Rest]) ->
+    {Current_year,_,_}=date(),
+    [Y1,Y2|_]=integer_to_list(Current_year),
+    Year=list_to_integer([Y1,Y2,Y3,Y4]),
+    Day=list_to_integer([D1,D2]),
+    Month=convert_month([M,O,N]),
+    Hour=list_to_integer([H1,H2]),
+    Min=list_to_integer([M1,M2]),
+    Sec=list_to_integer([S1,S2]),
     {{Year,Month,Day},{Hour,Min,Sec}}.
 
 hexlist_to_integer([])->
